@@ -44,50 +44,52 @@ public class Pitch extends GameObject{
 
     }
     //moves to clicked position if its permitted
-    public void move(Point viewPos, AppState mode){
+    public void move(Point viewPos){
         Point last = currentGameState.getLast();
         Point pitchPos = view2pitch(viewPos);
         if (last.getNext(Direction.U).equals(pitchPos)){
             if (currentGameState.isPermitted(Direction.U)) {
-                currentGameState.move(Direction.U, mode);
+                currentGameState.move(Direction.U);
             }
 
         }
         if (last.getNext(Direction.UR).equals(pitchPos)){
             if (currentGameState.isPermitted(Direction.UR)) {
-                currentGameState.move(Direction.UR, mode);
+                currentGameState.move(Direction.UR);
             }
         }
         if (last.getNext(Direction.R).equals(pitchPos)){
             if (currentGameState.isPermitted(Direction.R)) {
-                currentGameState.move(Direction.R, mode);
+                currentGameState.move(Direction.R);
             }
         }
         if (last.getNext(Direction.DR).equals(pitchPos)){
             if (currentGameState.isPermitted(Direction.DR)) {
-                currentGameState.move(Direction.DR, mode);
+                currentGameState.move(Direction.DR);
             }
         }
         if (last.getNext(Direction.D).equals(pitchPos)){
             if (currentGameState.isPermitted(Direction.D)) {
-                currentGameState.move(Direction.D, mode);
+                currentGameState.move(Direction.D);
             }
         }
         if (last.getNext(Direction.DL).equals(pitchPos)){
             if (currentGameState.isPermitted(Direction.DL)) {
-                currentGameState.move(Direction.DL, mode);
+                currentGameState.move(Direction.DL);
             }
         }
         if (last.getNext(Direction.L).equals(pitchPos)){
             if (currentGameState.isPermitted(Direction.L)) {
-                currentGameState.move(Direction.L, mode);
+                currentGameState.move(Direction.L);
             }
         }
         if (last.getNext(Direction.UL).equals(pitchPos)) {
             if (currentGameState.isPermitted(Direction.UL)) {
-                currentGameState.move(Direction.UL, mode);
+                currentGameState.move(Direction.UL);
             }
         }
+        currentGameState.calculateRating();
+        System.out.println(currentGameState.realRating);
     }
 
 }

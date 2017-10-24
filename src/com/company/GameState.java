@@ -3,14 +3,22 @@ package com.company;
 import java.awt.*;
 import java.util.LinkedList;
 
+import static com.company.AppState.PVE;
 import static com.company.Player.P1;
 import static com.company.Player.P2;
 
 //Class containing information about every move made during the game
 public class GameState {
+    double realRating; //0 is neutral, positive is good for p1, negative is good for p2/AI
+    double potentialRating; //rating reached in future assuming best possible moves
     private LinkedList<Point> points = new LinkedList<Point>();
     private LinkedList<GameState> children = new LinkedList<GameState>();
 
+    public void setGameMode(AppState gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    AppState gameMode;
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
@@ -70,7 +78,8 @@ public class GameState {
         }
         return true;
     }
-    void switchPlayers(AppState mode){
+    void switchPlayers(){
+        AppState mode = gameMode;
         System.out.println("swittching players");
         if (mode==AppState.PVP){
             System.out.println("in mode PVP");
@@ -89,7 +98,7 @@ public class GameState {
                 currentPlayer = P1;
             }
         }
-        if (mode==AppState.PVE){
+        if (mode== PVE){
             if (currentPlayer==Player.AI){
                 currentPlayer = P1;
             }
@@ -111,11 +120,11 @@ public class GameState {
         return false;
     }
 
-    public void move(Direction direction,AppState mode){
+    public void move(Direction direction){
         Point newPoint = points.getLast().getNext(direction);
         newPoint.setMadeBy(currentPlayer);
         if (!bounce(newPoint)){
-            switchPlayers(mode);
+            switchPlayers();
         }
 
         points.addLast(newPoint);
@@ -138,10 +147,85 @@ public class GameState {
 
             g.drawLine(x1,y1,x2,y2);
         }
+        for (GameState child: children){
+            System.out.println("rendering child");
+            child.render(g, pitchPos, squareSize);
+        }
+    }
+    public void eraseMove(){
+        if (points.size()<2){
+            return;
+        }
+        Player last = getLast().getMadeBy();
+        while (points.getLast().getMadeBy()==last){
+            points.removeLast();
+            System.out.println("usuwanie");
+        }
+        switchPlayers();
     }
     public Point getLast(){
         return points.getLast();
 
+    }
+    private GameState copy(){
+        GameState n = new GameState();
+        for (int i = 1; i<points.size();i++){
+            n.points.addLast(this.points.get(i));
+        }
+        return n;
+    }
+    public LinkedList<GameState> findChildren(){
+        LinkedList<GameState> states = new LinkedList<GameState>();
+        for (Direction dir : Direction.values()){
+            GameState n=this.copy();
+            if (n.isPermitted(dir)){
+                Point p = n.getLast().getNext(dir);
+
+                if (n.bounce(p)){
+                    n.move(dir);
+                    //states.addAll(n.findChildren());
+                }
+                else{
+                    n.move(dir);
+                    System.out.println("dodawanie dziecka");
+                    states.addLast(n);
+                }
+            }
+        }
+        return states;
+    }
+
+    public void generateTree(int depth){
+        if (depth==0){
+            return;
+        }
+        this.children=findChildren();
+        for (GameState child: children){
+            child.generateTree(depth-1);
+        }
+    }
+    public void calculateRating(){
+        float k=0.0f;// for each point closer to the enemy goal gets k points
+        float goalRating=9999;
+        if (Boundries.score(getLast())==2){
+            realRating= goalRating;
+            return;
+        }
+        if (Boundries.score(getLast())==1){
+            realRating= -goalRating;
+            return;
+        }
+        int x = getLast().getX();
+        int y = getLast().getY();
+        realRating = (double)(x*x*x)/(double)(y*y+3);
+        for (Point p:points){
+            if (p.getX()<x){
+                realRating+=k;
+            }
+            if (p.getX()>x){
+                realRating-=k;
+            }
+        }
     }
     
 }

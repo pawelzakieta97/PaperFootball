@@ -46,17 +46,24 @@ public class Controller implements MouseListener{
     }
 
     public void mouseClicked(MouseEvent event){
-        System.out.println("kurwahuj");
     }
 
     public void mousePressed(MouseEvent event){
-        System.out.println("kurwahujjebacpolicje");
     }
 
     public void mouseReleased(MouseEvent event){
-        Point pos = new Point(event.getX(),event.getY());
-        if (appState==AppState.PVP){
-            model.pitch.move(pos, appState);
+        if (event.getButton()==MouseEvent.BUTTON1){
+            System.out.println("button 1");
+            Point pos = new Point(event.getX(),event.getY());
+            if (appState==AppState.PVP){
+                model.pitch.move(pos);
+            }
+            model.pitch.currentGameState.findChildren();
+
+        }
+        if (event.getButton()==MouseEvent.BUTTON3){
+            System.out.println("button 3");
+            model.pitch.currentGameState.eraseMove();
         }
 
     }

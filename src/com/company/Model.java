@@ -24,6 +24,7 @@ public class Model {
 
         Pitch pitch = new Pitch(100,100,30);
         pitch.currentGameState.setCurrentPlayer(Player.P1);
+        pitch.currentGameState.setGameMode(AppState.PVP);
         this.pitch = pitch;
 
         addObject(pitch);
