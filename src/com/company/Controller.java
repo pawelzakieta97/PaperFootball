@@ -58,7 +58,7 @@ public class Controller implements MouseListener{
             if (appState==AppState.PVP){
                 model.pitch.move(pos);
             }
-            model.pitch.currentGameState.findChildren();
+            model.pitch.currentGameState.generateTree(2);
 
         }
         if (event.getButton()==MouseEvent.BUTTON3){

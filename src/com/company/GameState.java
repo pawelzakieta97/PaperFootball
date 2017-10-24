@@ -13,6 +13,7 @@ public class GameState {
     double potentialRating; //rating reached in future assuming best possible moves
     private LinkedList<Point> points = new LinkedList<Point>();
     private LinkedList<GameState> children = new LinkedList<GameState>();
+    private int maxBouncesNum=4; //number of bounces that allowed per one move (with more complex states this decreases calculation time)
 
     public void setGameMode(AppState gameMode) {
         this.gameMode = gameMode;
@@ -147,8 +148,8 @@ public class GameState {
 
             g.drawLine(x1,y1,x2,y2);
         }
+
         for (GameState child: children){
-            System.out.println("rendering child");
             child.render(g, pitchPos, squareSize);
         }
     }
@@ -174,7 +175,7 @@ public class GameState {
         }
         return n;
     }
-    public LinkedList<GameState> findChildren(){
+    public LinkedList<GameState> findChildren(int maxBounces){
         LinkedList<GameState> states = new LinkedList<GameState>();
         for (Direction dir : Direction.values()){
             GameState n=this.copy();
@@ -182,8 +183,10 @@ public class GameState {
                 Point p = n.getLast().getNext(dir);
 
                 if (n.bounce(p)){
+                    if (maxBounces>0){
                     n.move(dir);
-                    //states.addAll(n.findChildren());
+                    states.addAll(n.findChildren(maxBounces-1));
+                    }
                 }
                 else{
                     n.move(dir);
@@ -199,7 +202,7 @@ public class GameState {
         if (depth==0){
             return;
         }
-        this.children=findChildren();
+        this.children=findChildren(maxBouncesNum);
         for (GameState child: children){
             child.generateTree(depth-1);
         }
