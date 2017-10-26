@@ -88,8 +88,8 @@ public class Pitch extends GameObject{
                 currentGameState.move(Direction.UL);
             }
         }
-        currentGameState.calculateRating();
-        System.out.println(currentGameState.realRating);
+
+        System.out.println(currentGameState.getCurrentRating());
     }
 
 }

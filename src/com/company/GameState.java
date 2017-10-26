@@ -9,17 +9,25 @@ import static com.company.Player.P2;
 
 //Class containing information about every move made during the game
 public class GameState {
-    double realRating; //0 is neutral, positive is good for p1, negative is good for p2/AI
-    double potentialRating; //rating reached in future assuming best possible moves
+    double rating; //0 is neutral, positive is good for p1, negative is good for p2/AI
     private LinkedList<Point> points = new LinkedList<Point>();
     private LinkedList<GameState> children = new LinkedList<GameState>();
     private int maxBouncesNum=4; //number of bounces that allowed per one move (with more complex states this decreases calculation time)
+    private int scored = 0; //1 if P1 scored, -1 if P2 scored
+    private Player currentPlayer=Player.AI;
+    public AppState gameMode;
 
+
+    public GameState(){
+        Point p = new Point(0,0);
+        points.addLast(p);
+    }
+    public AppState getGameMode() {
+        return gameMode;
+    }
     public void setGameMode(AppState gameMode) {
         this.gameMode = gameMode;
     }
-
-    AppState gameMode;
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
@@ -28,11 +36,8 @@ public class GameState {
         this.currentPlayer = currentPlayer;
     }
 
-    private Player currentPlayer=Player.AI;
-    public GameState(){
-        Point p = new Point(0,0);
-        points.addLast(p);
-    }
+
+
 
     //Checks if the line is not occupied
     public boolean isPermitted(Direction direction){
@@ -55,14 +60,17 @@ public class GameState {
                     if (p.getNext(direction).equals(points.get(1))){
                         return false;
                     }
-                    else return true;
+                    else continue;
                 }
                 if (p.getNext(direction).equals(points.get(i-1)) || p.getNext(direction).equals(points.get(i+1))){
-                    System.out.print("nie mozna ruszyc");
+                    //System.out.print("nie mozna ruszyc");
                     return false;
                 }
             }
 
+        }
+        if (Boundries.isInCorner(last.getNext(direction))){
+            return false;
         }
         if (Boundries.isOnHorizontal(last)){
             if (Boundries.isOnHorizontal(last.getNext(direction))){
@@ -81,21 +89,21 @@ public class GameState {
     }
     void switchPlayers(){
         AppState mode = gameMode;
-        System.out.println("swittching players");
+        //System.out.println("swittching players");
         if (mode==AppState.PVP){
-            System.out.println("in mode PVP");
+            //System.out.println("in mode PVP");
 
             if (currentPlayer==Player.AI){
-                System.out.println("from AI to P1");
+                //System.out.println("from AI to P1");
 
                 currentPlayer = P1;
             }
             else if (currentPlayer== P1){
-                System.out.println("from P1 to P2");
+                //System.out.println("from P1 to P2");
                 currentPlayer = P2;
             }
             else if (currentPlayer== P2){
-                System.out.println("from P2 to P1");
+                //System.out.println("from P2 to P1");
                 currentPlayer = P1;
             }
         }
@@ -149,9 +157,9 @@ public class GameState {
             g.drawLine(x1,y1,x2,y2);
         }
 
-        for (GameState child: children){
+        /*for (GameState child: children){
             child.render(g, pitchPos, squareSize);
-        }
+        }*/
     }
     public void eraseMove(){
         if (points.size()<2){
@@ -160,7 +168,7 @@ public class GameState {
         Player last = getLast().getMadeBy();
         while (points.getLast().getMadeBy()==last){
             points.removeLast();
-            System.out.println("usuwanie");
+            //System.out.println("usuwanie");
         }
         switchPlayers();
     }
@@ -173,11 +181,15 @@ public class GameState {
         for (int i = 1; i<points.size();i++){
             n.points.addLast(this.points.get(i));
         }
+        n.setCurrentPlayer(getCurrentPlayer());
+        n.setGameMode(getGameMode());
+        n.scored = scored;
         return n;
     }
     public LinkedList<GameState> findChildren(int maxBounces){
         LinkedList<GameState> states = new LinkedList<GameState>();
         for (Direction dir : Direction.values()){
+            //dir = Direction.R;
             GameState n=this.copy();
             if (n.isPermitted(dir)){
                 Point p = n.getLast().getNext(dir);
@@ -190,7 +202,7 @@ public class GameState {
                 }
                 else{
                     n.move(dir);
-                    System.out.println("dodawanie dziecka");
+                    //System.out.println("dodawanie dziecka");
                     states.addLast(n);
                 }
             }
@@ -207,28 +219,83 @@ public class GameState {
             child.generateTree(depth-1);
         }
     }
-    public void calculateRating(){
+    public double getCurrentRating(){
         float k=0.0f;// for each point closer to the enemy goal gets k points
         float goalRating=9999;
-        if (Boundries.score(getLast())==2){
-            realRating= goalRating;
-            return;
-        }
         if (Boundries.score(getLast())==1){
-            realRating= -goalRating;
-            return;
+            scored = 1;
+            return goalRating;
+
+        }
+        if (Boundries.score(getLast())==-1){
+            scored = -1;
+            return -goalRating;
         }
         int x = getLast().getX();
         int y = getLast().getY();
-        realRating = (double)(x*x*x)/(double)(y*y+3);
-        for (Point p:points){
+        return (double)(x*x*x)/(double)(y*y+3);
+        /*for (Point p:points){
             if (p.getX()<x){
-                realRating+=k;
+                rating+=k;
             }
             if (p.getX()>x){
-                realRating-=k;
+                rating-=k;
+            }
+        }*/
+    }
+    public double getRealRating(){//AI needs low rating
+        Player current = getCurrentPlayer();
+        double bestRating = 69000;
+        if (current == P1){
+            bestRating = -69000;
+        }
+        if (children.isEmpty()){
+            bestRating = getCurrentRating();
+        }
+        getCurrentRating();
+        if (scored != 0){
+            return (9999*scored);
+        }
+        for (GameState child: children){
+            double childRating = child.getRealRating();
+            if (current == P1) {
+                if (childRating > bestRating) {
+                    bestRating = childRating;
+                }
+            }
+            else{
+                if (childRating < bestRating) {
+                    bestRating = childRating;
+                }
+            }
+
+        }
+        return bestRating;
+    }
+    public GameState getBestMove(){
+        double bestRating=100000;
+        if (currentPlayer==P1){
+            bestRating = -100000;
+        }
+        GameState best = new GameState();
+        for (GameState child: children){
+            double rating = child.getRealRating();
+            if (currentPlayer == Player.P1) {
+                if (rating > bestRating) {
+                    bestRating = rating;
+                    best = child;
+                }
+            }
+            else {
+                if (rating < bestRating) {
+                    bestRating = rating;
+                    best = child;
+                }
             }
         }
+        System.out.println("best rating");
+        System.out.println(bestRating);
+        return best;
     }
     
 }

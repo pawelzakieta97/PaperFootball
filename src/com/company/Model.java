@@ -23,7 +23,7 @@ public class Model {
     public void startPVP(){
 
         Pitch pitch = new Pitch(100,100,30);
-        pitch.currentGameState.setCurrentPlayer(Player.P1);
+        pitch.currentGameState.setCurrentPlayer(Player.P2);
         pitch.currentGameState.setGameMode(AppState.PVP);
         this.pitch = pitch;
 

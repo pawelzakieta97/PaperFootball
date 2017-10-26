@@ -9,12 +9,22 @@ public class Boundries {
                 return true;
             }
         }
+        if (p.getX()==-6 || p.getX()==-6 || p.getX()==-5 || p.getX()==6){
+            if (p.getY()==1 || p.getY()==-1){
+                return true;
+            }
+        }
         return false;
     }
     public static boolean isOnVertical(Point p){
         if (p.getX()==-5 || p.getX()==5){
             if (p.getY()>=-4 && p.getY()<=4){
                 if (p.getY()!=0){
+                    return true;
+                }
+            }
+            if (p.getX() == -6 || p.getX() == 6){
+                if (p.getY()==1 || p.getY()==0 || p.getY()==-1) {
                     return true;
                 }
             }
@@ -38,6 +48,7 @@ public class Boundries {
             }
         }
         return false;
+        //return (Boundries.isOnHorizontal(p) && Boundries.isOnVertical(p));
     }
     public static boolean isInside(Point p){
         if (p.getX()>-5 && p.getX()<5 && p.getY()>-4 && p.getY()<4){
@@ -49,16 +60,16 @@ public class Boundries {
         return false;
     }
     public static boolean isOutside(Point p){
-        return (!isInside(p) && !isInCorner(p) && !isOnHorizontal(p) && !isOnVertical(p));
+        return (!isInside(p)  && !isOnHorizontal(p) && !isOnVertical(p));
     }
     //returns 1 if ball is inside left goal and 2 if in right
     public static int score(Point p){
         if (p.getY()==0){
             if (p.getX()==-6){
-                return 1;
+                return -1;
             }
             if (p.getX()==6){
-                return 2;
+                return 1;
             }
         }
         return 0;
