@@ -6,7 +6,16 @@ public class Pitch extends GameObject{
     int posX;
     int posY;
     int squareSize;
-    GameState currentGameState;
+
+    public GameState getCurrentGameState() {
+        return currentGameState;
+    }
+
+    public void setCurrentGameState(GameState currentGameState) {
+        this.currentGameState = currentGameState;
+    }
+
+    public GameState currentGameState;
     public Pitch(int posX, int posY, int squareSize){
         this.posX=posX;
         this.posY=posY;
@@ -45,6 +54,7 @@ public class Pitch extends GameObject{
     }
     //moves to clicked position if its permitted
     public void move(Point viewPos){
+
         Point last = currentGameState.getLast();
         Point pitchPos = view2pitch(viewPos);
         if (last.getNext(Direction.U).equals(pitchPos)){

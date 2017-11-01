@@ -12,9 +12,9 @@ public class GameState {
     double rating; //0 is neutral, positive is good for p1, negative is good for p2/AI
     private LinkedList<Point> points = new LinkedList<Point>();
     private LinkedList<GameState> children = new LinkedList<GameState>();
-    private int maxBouncesNum=4; //number of bounces that allowed per one move (with more complex states this decreases calculation time)
+    private int maxBouncesNum=5; //number of bounces that allowed per one move (with more complex states this decreases calculation time)
     private int scored = 0; //1 if P1 scored, -1 if P2 scored
-    private Player currentPlayer=Player.AI;
+    private Player currentPlayer=Player.P1;
     public AppState gameMode;
 
 
@@ -96,7 +96,7 @@ public class GameState {
             if (currentPlayer==Player.AI){
                 //System.out.println("from AI to P1");
 
-                currentPlayer = P1;
+                currentPlayer = P2;
             }
             else if (currentPlayer== P1){
                 //System.out.println("from P1 to P2");
@@ -113,6 +113,9 @@ public class GameState {
             }
             else if (currentPlayer== P1){
                 currentPlayer = Player.AI;
+            }
+            else if (currentPlayer== P2){
+                currentPlayer = Player.P1;
             }
         }
     }
@@ -155,7 +158,14 @@ public class GameState {
             }
 
             g.drawLine(x1,y1,x2,y2);
+
         }
+        g.setColor(Color.white);
+        Point ballPos = getLast();
+        int radius = 8;
+        int x=pitchPos.getX()+5*squareSize+ballPos.getX()*squareSize-radius;
+        int y=pitchPos.getY()+4*squareSize+ballPos.getY()*squareSize-radius;
+        g.fillOval(x,y,2*radius,2*radius);
 
         /*for (GameState child: children){
             child.render(g, pitchPos, squareSize);
