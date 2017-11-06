@@ -2,7 +2,7 @@ package com.company;
 
 public class Main {
     public static void main(String[] args){
-        View view = new View("kurwa gra");
+        View view = new View("gra");
         Model model = new Model();
 
         model.addObserver(view);

@@ -30,15 +30,31 @@ public class Pitch extends GameObject{
     public void render(Graphics g){
         int dotDiameter=4;
         g.setColor(Color.green);
-        g.fillRect(posX,posY,squareSize*10,squareSize*8);
-        g.fillRect(posX-squareSize,posY+3*squareSize,squareSize*12,squareSize*2);
+        //g.fillRect(posX,posY,squareSize*10,squareSize*8);
+        //g.fillRect(posX-squareSize,posY+3*squareSize,squareSize*12,squareSize*2);
         currentGameState.render(g, new Point(posX,posY), squareSize);
         g.setColor(Color.black);
         for (int y=0;y<9;y++){
             for (int x=0; x<11;x++){
-                g.fillRect(posX+x*squareSize-dotDiameter/2, posY+y*squareSize-dotDiameter/2,dotDiameter,dotDiameter);
+                //g.fillRect(posX+x*squareSize-dotDiameter/2, posY+y*squareSize-dotDiameter/2,dotDiameter,dotDiameter);
             }
         }
+        int borderWidth=2;
+        g.fillRect(posX,posY-borderWidth/2,10*squareSize,borderWidth);              //horizontal upper line
+        g.fillRect(posX,posY+8*squareSize-borderWidth/2,10*squareSize,borderWidth); //horizontal lower line
+        g.fillRect(posX-borderWidth/2,posY,borderWidth,3*squareSize);               //vertical left upper
+        g.fillRect(posX-borderWidth/2,posY+5*squareSize,borderWidth,3*squareSize);//vertical left lower
+        g.fillRect(posX+10*squareSize-borderWidth/2,posY,borderWidth,3*squareSize); //vertical right upper
+        g.fillRect(posX+10*squareSize-borderWidth/2,posY+5*squareSize,borderWidth,3*squareSize);//vertical right lower
+        //goals horizontal:
+        g.fillRect(posX-squareSize,posY+3*squareSize-borderWidth/2,squareSize,borderWidth);
+        g.fillRect(posX+10*squareSize,posY+3*squareSize-borderWidth/2,squareSize,borderWidth);
+        g.fillRect(posX-squareSize,posY+5*squareSize-borderWidth/2,squareSize,borderWidth);
+        g.fillRect(posX+10*squareSize,posY+5*squareSize-borderWidth/2,squareSize,borderWidth);
+        //goals vertical:
+        g.fillRect(posX-squareSize-borderWidth/2,posY+3*squareSize-borderWidth/2,borderWidth,2*squareSize);
+        g.fillRect(posX+11*squareSize-borderWidth/2,posY+3*squareSize-borderWidth/2,borderWidth,2*squareSize);
+
     }
     //converts pitch coordinates to view coordinates
     public Point pitch2view(Point pitch){

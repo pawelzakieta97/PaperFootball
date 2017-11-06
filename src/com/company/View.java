@@ -1,10 +1,16 @@
 package com.company;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
@@ -97,19 +103,21 @@ public class View extends Canvas implements Observer{
 
         BufferStrategy bs=this.getBufferStrategy();
         if (bs==null){
-            this.createBufferStrategy(3);
+            this.createBufferStrategy(2);
             bs=this.getBufferStrategy();
             //return;
         }
         Graphics g = bs.getDrawGraphics();
-        g.setColor(Color.gray);
-        g.fillRect(0,0, Constants.WIDTH, Constants.HEIGHT);
+        renderBG(g);
         for (GameObject o: model.objects){
             o.render(g);
         }
+        //model.getPitch().render(g);
         // nie wiem czemu ale jak jest tylko raz "show" to nie pokazuje na bierzaco, tylko jeden ruch w tyl
         bs.show();
-        bs.show();
+        //System.out.println(model.getPitch().currentGameState.treeSize());
+        //bs.show();
+
 
 
         g.dispose();
@@ -118,6 +126,38 @@ public class View extends Canvas implements Observer{
     public void update(Observable obs, Object obj){
         System.out.println("wywolano update");
         render();
+    }
+    void renderBG(Graphics g){
+        System.out.println("bg rendered");
+        Color paper = new Color(254,254,240);
+        g.setColor(paper);
+        g.fillRect(0,0,Constants.WIDTH, Constants.HEIGHT);
+        renderChecker(g);
+
+        BufferedImage img = null;
+        try{
+            img = ImageIO.read(new File("kolka.png"));
+        }
+        catch (IOException e){
+            System.out.println("nie znaleziono obrazu");
+        }
+        g.drawImage(img, 0, 0,null);
+    }
+
+    void renderChecker(Graphics g){
+        int x=0, y=0;
+        Color grid = new Color(170,220,255);
+        g.setColor(grid);
+        while (y<Constants.HEIGHT){
+
+            g.drawLine(0,y,Constants.WIDTH,y);
+            y=y+Constants.SQUARE_SIZE;
+        }
+        while (x<Constants.WIDTH){
+            g.drawLine(x,0,x,Constants.HEIGHT);
+            x=x+Constants.SQUARE_SIZE;
+        }
+
     }
 
 }

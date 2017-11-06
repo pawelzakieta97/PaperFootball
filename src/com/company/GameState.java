@@ -7,6 +7,8 @@ import static com.company.AppState.PVE;
 import static com.company.Player.P1;
 import static com.company.Player.P2;
 
+import static com.company.Constants.*;
+
 //Class containing information about every move made during the game
 public class GameState {
     double rating; //0 is neutral, positive is good for p1, negative is good for p2/AI
@@ -143,26 +145,26 @@ public class GameState {
     }
     void render(Graphics g, Point pitchPos, int squareSize){
         for (int i=0; i<points.size()-1; i++){
+            g.setColor(P1Color);
             int x1=pitchPos.getX()+5*squareSize+points.get(i).getX()*squareSize;
             int y1=pitchPos.getY()+4*squareSize+points.get(i).getY()*squareSize;
             int x2=pitchPos.getX()+5*squareSize+points.get(i+1).getX()*squareSize;
             int y2=pitchPos.getY()+4*squareSize+points.get(i+1).getY()*squareSize;
             if (points.get(i+1).getMadeBy()==Player.P1){
-                g.setColor(Color.blue);
+                g.setColor(P1Color);
             }
             if (points.get(i+1).getMadeBy()==Player.P2){
-                g.setColor(Color.red);
+                g.setColor(P2Color);
             }
             if (points.get(i+1).getMadeBy()==Player.AI){
-                g.setColor(Color.white);
+                g.setColor(AIColor);
             }
 
             g.drawLine(x1,y1,x2,y2);
 
         }
-        g.setColor(Color.white);
         Point ballPos = getLast();
-        int radius = 8;
+        int radius = 2;
         int x=pitchPos.getX()+5*squareSize+ballPos.getX()*squareSize-radius;
         int y=pitchPos.getY()+4*squareSize+ballPos.getY()*squareSize-radius;
         g.fillOval(x,y,2*radius,2*radius);
@@ -306,6 +308,17 @@ public class GameState {
         System.out.println("best rating");
         System.out.println(bestRating);
         return best;
+    }
+
+    public int treeSize(){
+        int a = 0;
+        if (children.size()==0){
+            return 1;
+        }
+        for (GameState child: children){
+            a+=child.treeSize();
+        }
+        return a;
     }
     
 }

@@ -29,7 +29,7 @@ public class Model extends Observable{
     private Pitch pitch;
 
     public Model(){
-        pitch = new Pitch(WIDTH/2-6*SQUARE_SIZE,HEIGHT/2-5*SQUARE_SIZE, SQUARE_SIZE);
+        pitch = new Pitch(WIDTH/2-5*SQUARE_SIZE,HEIGHT/2-5*SQUARE_SIZE, SQUARE_SIZE);
     }
 
     public void assignController(Controller controller){
@@ -41,16 +41,22 @@ public class Model extends Observable{
     public void removeObject(GameObject o){
         this.objects.remove(o);
     }
+    public void removeAllObjects(){
+        for (GameObject o :objects){
+            this.objects.remove(o);
+        }
+    }
 
 
 
 
     public void startNewGame(AppState mode){
 
-        Pitch pitch = new Pitch(100,100,30);
+        Pitch pitch = new Pitch(WIDTH/2-5*SQUARE_SIZE,HEIGHT/2-5*SQUARE_SIZE, SQUARE_SIZE);
         pitch.getCurrentGameState().setCurrentPlayer(Player.P1);
         pitch.getCurrentGameState().setGameMode(mode);
         this.pitch = pitch;
+        removeAllObjects();
         addObject(pitch);
         setChanged();
         notifyObservers();
@@ -76,6 +82,7 @@ public class Model extends Observable{
         if (difficulty<1) difficulty =1;
         if (difficulty>2) difficulty = 2;
         pitch.getCurrentGameState().generateTree(difficulty);
+        System.out.println(pitch.getCurrentGameState().treeSize());
         pitch.setCurrentGameState(pitch.getCurrentGameState().getBestMove());
         setChanged();
         notifyObservers();

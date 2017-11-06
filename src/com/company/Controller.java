@@ -45,8 +45,6 @@ public class Controller implements MouseListener{
             }
             //model.pitch.currentGameState.generateTree(2);*/
             model.makePlayerMove(pos);
-            long begin = System.currentTimeMillis();
-            while (System.currentTimeMillis()-begin<100){}
 
         }
         if (event.getButton()==MouseEvent.BUTTON3){
