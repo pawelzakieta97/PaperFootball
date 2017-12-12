@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Observable;
 import static com.company.Constants.*;
 
-public class Model extends Observable{
+public class Model{
     LinkedList<GameObject> objects = new LinkedList<GameObject>();
     private Controller controller;
 
@@ -17,6 +17,7 @@ public class Model extends Observable{
     }
 
     private int difficulty=2;
+
 
     public Pitch getPitch() {
         return pitch;
@@ -58,18 +59,18 @@ public class Model extends Observable{
         this.pitch = pitch;
         removeAllObjects();
         addObject(pitch);
-        setChanged();
-        notifyObservers();
+//        setChanged();
+//        notifyObservers();
     }
 
     // Funkcja wywoływana przy kliknięciu lewego przycisku myszy. Jeśli jest tura gracza i wskazany ruch jest dozwolony,
     //jest on wykonywany.
     public void makePlayerMove(Point mousePos){
         if (pitch.getCurrentGameState().getCurrentPlayer()==Player.AI) return;
-        pitch.move(mousePos);
-        //attempts making AI move (wont happen if PVP selected)
-        setChanged();
-        notifyObservers();
+        pitch.attemptMove(mousePos);
+        //attempts making AI attemptMove (wont happen if PVP selected)
+//        setChanged();
+//        notifyObservers();
         makeAIMove(difficulty);
 
 
@@ -84,8 +85,8 @@ public class Model extends Observable{
         pitch.getCurrentGameState().generateTree(difficulty);
         System.out.println(pitch.getCurrentGameState().treeSize());
         pitch.setCurrentGameState(pitch.getCurrentGameState().getBestMove());
-        setChanged();
-        notifyObservers();
+//        setChanged();
+//        notifyObservers();
 
     }
 
@@ -98,7 +99,7 @@ public class Model extends Observable{
     }
     public void eraseMove(){
         pitch.getCurrentGameState().eraseMove();
-        setChanged();
-        notifyObservers();
+//        setChanged();
+//        notifyObservers();
     }
 }

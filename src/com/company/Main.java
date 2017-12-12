@@ -5,13 +5,15 @@ public class Main {
         View view = new View("gra");
         Model model = new Model();
 
-        model.addObserver(view);
         view.assignModel(model);
 
         Controller controller = new Controller(view,model);
         model.assignController(controller);
-        for (long i=0; i<20; i++){
+        for (long i=0; i<1; i++){
             model.startNewGame(AppState.PVP);
+            model.getPitch().addObserver(view);
+
+
         }
 
         //controller.run();

@@ -69,7 +69,7 @@ public class Pitch extends GameObject{
 
     }
     //moves to clicked position if its permitted
-    public void move(Point viewPos){
+    public void attemptMove(Point viewPos){
 
         Point last = currentGameState.getLast();
         Point pitchPos = view2pitch(viewPos);
@@ -116,6 +116,9 @@ public class Pitch extends GameObject{
         }
 
         System.out.println(currentGameState.getCurrentRating());
+        setChanged();
+        notifyObservers();
+        System.out.println(countObservers());
     }
 
 }

@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.LinkedList;
+import java.util.Observer;
 
 public class Controller implements MouseListener{
     private View view;
@@ -11,6 +12,7 @@ public class Controller implements MouseListener{
     private final int tick = 60;
     private Thread thread;
     private boolean running=false;
+    private MouseEventHandler mouseEventHandler;
     //public AppState appState = AppState.MENU;
 
     public Controller (View view, Model model){
@@ -19,7 +21,7 @@ public class Controller implements MouseListener{
         view.addMouseListener(this);
 
         model.setDifficulty(view.difficulty.getSelectedIndex()+1);
-        //view.render();
+        //view.paint();
         toolbarSetup();
 
     }
@@ -36,14 +38,6 @@ public class Controller implements MouseListener{
         if (event.getButton()==MouseEvent.BUTTON1){
             System.out.println("button 1");
             Point pos = new Point(event.getX(),event.getY());
-            /*if (appState==AppState.PVP){
-                model.pitch.move(pos);
-                if (model.pitch.currentGameState.getCurrentPlayer()==Player.P2) {
-                    model.pitch.currentGameState.generateTree(2);
-                    model.pitch.currentGameState = model.pitch.currentGameState.getBestMove();
-                }
-            }
-            //model.pitch.currentGameState.generateTree(2);*/
             model.makePlayerMove(pos);
 
         }
@@ -93,5 +87,11 @@ public class Controller implements MouseListener{
 
             }
         });
+    }
+    public void playerMoved(){
+        if(model.getPitch().getCurrentGameState().getGameMode()==AppState.PVE){
+            model.makeAIMove(model.getDifficulty());
+        }
+        view.repaint();
     }
 }

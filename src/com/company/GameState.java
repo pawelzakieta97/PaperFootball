@@ -2,6 +2,7 @@ package com.company;
 
 import java.awt.*;
 import java.util.LinkedList;
+import java.util.Observable;
 
 import static com.company.AppState.PVE;
 import static com.company.Player.P1;
@@ -9,20 +10,38 @@ import static com.company.Player.P2;
 
 import static com.company.Constants.*;
 
-//Class containing information about every move made during the game
-public class GameState {
+//Class containing information about every attemptMove made during the game
+public class GameState{
     double rating; //0 is neutral, positive is good for p1, negative is good for p2/AI
     private LinkedList<Point> points = new LinkedList<Point>();
     private LinkedList<GameState> children = new LinkedList<GameState>();
-    private int maxBouncesNum=5; //number of bounces that allowed per one move (with more complex states this decreases calculation time)
+    private int maxBouncesNum=5; //number of bounces that allowed per one attemptMove (with more complex states this decreases calculation time)
     private int scored = 0; //1 if P1 scored, -1 if P2 scored
     private Player currentPlayer=Player.P1;
     public AppState gameMode;
+    private GameState parent;
 
 
     public GameState(){
         Point p = new Point(0,0);
         points.addLast(p);
+        parent = null;
+    }
+    //zwraca dziecko w nowym standardzie
+    private GameState getChild(Direction direction){
+        GameState child = new GameState();
+        Point next = this.getLast().getNext(direction);
+        child.points.removeLast();
+        child.points.addLast(next);
+        return child;
+    }
+    private GameState getCombined(){
+        if (parent==null){
+            return this;
+        }
+        GameState whole;
+        whole = parent.getCombined();
+        return null;
     }
     public AppState getGameMode() {
         return gameMode;
@@ -170,7 +189,7 @@ public class GameState {
         g.fillOval(x,y,2*radius,2*radius);
 
         /*for (GameState child: children){
-            child.render(g, pitchPos, squareSize);
+            child.paint(g, pitchPos, squareSize);
         }*/
     }
     public void eraseMove(){

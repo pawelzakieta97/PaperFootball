@@ -3,20 +3,13 @@ package com.company;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
-import static com.company.Constants.*;
 
-public class View extends Canvas implements Observer{
+public class View extends JPanel implements Observer{
     //private Thread thread;
     //LinkedList<GameObject> objects = new LinkedList<GameObject>();
     private Model model;
@@ -99,33 +92,18 @@ public class View extends Canvas implements Observer{
         this.model=model;
     }
 
-    public void render(){
+    public void paint(Graphics g){
 
-        BufferStrategy bs=this.getBufferStrategy();
-        if (bs==null){
-            this.createBufferStrategy(2);
-            bs=this.getBufferStrategy();
-            //return;
-        }
-        Graphics g = bs.getDrawGraphics();
         renderBG(g);
         for (GameObject o: model.objects){
             o.render(g);
         }
-        //model.getPitch().render(g);
-        // nie wiem czemu ale jak jest tylko raz "show" to nie pokazuje na bierzaco, tylko jeden ruch w tyl
-        bs.show();
-        //System.out.println(model.getPitch().currentGameState.treeSize());
-        //bs.show();
-
-
-
         g.dispose();
 
     }
     public void update(Observable obs, Object obj){
         System.out.println("wywolano update");
-        render();
+        repaint();
     }
     void renderBG(Graphics g){
         System.out.println("bg rendered");
