@@ -3,7 +3,7 @@ package com.company;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedList;
-import java.util.Observable;
+
 import static com.company.Constants.*;
 
 public class Model{
@@ -50,12 +50,17 @@ public class Model{
 
 
 
-    public void startNewGame(AppState mode){
+    public void startNewGame(GameMode mode){
 
         Pitch pitch = new Pitch(WIDTH/2-5*SQUARE_SIZE,HEIGHT/2-5*SQUARE_SIZE, SQUARE_SIZE);
         pitch.getCurrentGameState().setCurrentPlayer(Player.P1);
         pitch.getCurrentGameState().setGameMode(mode);
         this.pitch = pitch;
+        Pitch newPitch = new Pitch(pitch);
+        Pitch oldPitch = newPitch;
+        firePropertyChange("pitch",null,newPitch);
+
+
     }
 
     // Funkcja wywoływana przy kliknięciu lewego przycisku myszy. Jeśli jest tura gracza i wskazany ruch jest dozwolony,
@@ -83,11 +88,11 @@ public class Model{
         pitch.setCurrentGameState(pitch.getCurrentGameState().getBestMove());
     }
 
-    public void setCurrentGameMode(AppState mode){
+    public void setCurrentGameMode(GameMode mode){
         pitch.getCurrentGameState().setGameMode(mode);
     }
 
-    public void setMode(AppState mode){
+    public void setMode(GameMode mode){
         pitch.getCurrentGameState().setGameMode(mode);
     }
 

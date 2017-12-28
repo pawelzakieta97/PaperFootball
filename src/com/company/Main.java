@@ -8,7 +8,7 @@ public class Main {
         //view.assignModel(model);
 
         Controller controller = new Controller(view,model);
-        model.assignController(controller);
-        controller.startNewGame(AppState.PVP);
+        //model.assignController(controller);
+        controller.startNewGame(GameMode.PVP);
     }
 }

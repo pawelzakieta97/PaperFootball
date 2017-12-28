@@ -7,14 +7,17 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
 
 public class View extends JPanel{
-    //private Thread thread;
-    //LinkedList<GameObject> objects = new LinkedList<GameObject>();
-    private Model model;
     private JFrame frame;
+    private JPanel gamePanel;
+    private Pitch pitch;
+
+    private Controller controller;
+
+    public Choice selectedMode;
+    public Choice difficulty;
+    public JButton resetButton;
 
     public Pitch getPitch() {
         return pitch;
@@ -24,15 +27,19 @@ public class View extends JPanel{
         this.pitch = pitch;
     }
 
-    private Pitch pitch;
-
-    public Choice selectedMode;
-    public Choice difficulty;
-    public JButton resetButton;
-
-    //private Thread thread;
 
     public View(String title){
+
+        gamePanel = new JPanel(){
+            public void paint(Graphics g){
+                renderBG(g);
+                if (pitch!=null){
+                    pitch.render(g);
+                }
+
+                g.dispose();
+            }
+        };
 
 
         frame = new JFrame(title);
@@ -57,43 +64,34 @@ public class View extends JPanel{
         difficulty = new Choice();
         difficulty.add("Easy");
         difficulty.add("Hard");
+        difficulty.setEnabled(false);
 
         JPanel modePanel = new JPanel(new GridLayout(1,2,0,0));
         modePanel.setOpaque(true);
         JPanel difficultyPanel = new JPanel(new GridLayout(1,2,0,0));
         difficultyPanel.setOpaque(true);
-
         JLabel labelMode = new JLabel("Player vs ");
         labelMode.setHorizontalAlignment(JLabel.RIGHT);
-
         JLabel labelDifficulty = new JLabel("Difficulty ");
         labelDifficulty.setHorizontalAlignment(JLabel.RIGHT);
-
         modePanel.add(labelMode);
         modePanel.add(selectedMode);
         difficultyPanel.add(labelDifficulty,BorderLayout.WEST);
         difficultyPanel.add(difficulty);
-
-
         toolbar.add(resetButton);
         toolbar.add(modePanel);
         toolbar.add(difficultyPanel);
-
         frame.add( toolbar , BorderLayout.NORTH );
         frame.pack();
-
         System.out.println(toolbarLayout.getColumns());
-
         frame.setVisible(true);
-
         frame.add(this);
-
-
     }
 
-    /*public void assignModel(Model model){
-        this.model=model;
-    }*/
+    public void assignController(Controller c){
+        controller = c;
+        gamePanel.addMouseListener(controller.getMouseEventHandler());
+    }
     public void modelPropertyChange(PropertyChangeEvent evt){
         pitch = (Pitch)evt.getNewValue();
     }
@@ -104,12 +102,7 @@ public class View extends JPanel{
         if (pitch!=null){
             pitch.render(g);
         }
-
         g.dispose();
-
-    }
-    public void render(GameObject o){
-
     }
 
     void renderBG(Graphics g){

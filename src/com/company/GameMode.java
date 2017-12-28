@@ -1,5 +1,5 @@
 package com.company;
 
-public enum AppState {
+public enum GameMode {
     PVP, PVE
 }

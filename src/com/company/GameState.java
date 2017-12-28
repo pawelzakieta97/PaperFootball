@@ -2,9 +2,8 @@ package com.company;
 
 import java.awt.*;
 import java.util.LinkedList;
-import java.util.Observable;
 
-import static com.company.AppState.PVE;
+import static com.company.GameMode.PVE;
 import static com.company.Player.P1;
 import static com.company.Player.P2;
 
@@ -18,7 +17,7 @@ public class GameState{
     private int maxBouncesNum=5; //number of bounces that allowed per one attemptMove (with more complex states this decreases calculation time)
     private int scored = 0; //1 if P1 scored, -1 if P2 scored
     private Player currentPlayer=Player.P1;
-    public AppState gameMode;
+    public GameMode gameMode;
     private GameState parent;
 
 
@@ -53,10 +52,10 @@ public class GameState{
         whole = parent.getCombined();
         return null;
     }
-    public AppState getGameMode() {
+    public GameMode getGameMode() {
         return gameMode;
     }
-    public void setGameMode(AppState gameMode) {
+    public void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
     }
     public Player getCurrentPlayer() {
@@ -119,9 +118,9 @@ public class GameState{
         return true;
     }
     void switchPlayers(){
-        AppState mode = gameMode;
+        GameMode mode = gameMode;
         //System.out.println("swittching players");
-        if (mode==AppState.PVP){
+        if (mode== GameMode.PVP){
             //System.out.println("in mode PVP");
 
             if (currentPlayer==Player.AI){

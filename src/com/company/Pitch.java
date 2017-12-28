@@ -9,13 +9,11 @@ public class Pitch extends GameObject{
     private GameState currentGameState;
 
     public GameState getCurrentGameState() {
-        forceUpdate();
         return currentGameState;
     }
 
     public void setCurrentGameState(GameState currentGameState) {
         this.currentGameState = currentGameState;
-        forceUpdate();
     }
 
 
@@ -25,7 +23,6 @@ public class Pitch extends GameObject{
         this.posY=posY;
         this.squareSize =squareSize;
         currentGameState = new GameState();
-        forceUpdate();
     }
 
     //konstruktor kopiujacy
@@ -37,22 +34,11 @@ public class Pitch extends GameObject{
 
     }
 
-    protected void tick() {
-
-    }
 
     public void render(Graphics g){
-        int dotDiameter=4;
         g.setColor(Color.green);
-        //g.fillRect(posX,posY,squareSize*10,squareSize*8);
-        //g.fillRect(posX-squareSize,posY+3*squareSize,squareSize*12,squareSize*2);
         currentGameState.render(g, new Point(posX,posY), squareSize);
         g.setColor(Color.black);
-        for (int y=0;y<9;y++){
-            for (int x=0; x<11;x++){
-                //g.fillRect(posX+x*squareSize-dotDiameter/2, posY+y*squareSize-dotDiameter/2,dotDiameter,dotDiameter);
-            }
-        }
         int borderWidth=2;
         g.fillRect(posX,posY-borderWidth/2,10*squareSize,borderWidth);              //horizontal upper line
         g.fillRect(posX,posY+8*squareSize-borderWidth/2,10*squareSize,borderWidth); //horizontal lower line
@@ -130,13 +116,6 @@ public class Pitch extends GameObject{
         }
 
         System.out.println(currentGameState.getCurrentRating());
-        setChanged();
-        notifyObservers();
-        System.out.println(countObservers());
-    }
-    public void forceUpdate(){
-        setChanged();
-        notifyObservers();
     }
 
 }
