@@ -9,11 +9,12 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-public class View extends JPanel implements Observer{
+public class View extends JPanel{
     //private Thread thread;
     //LinkedList<GameObject> objects = new LinkedList<GameObject>();
     private Model model;
     private JFrame frame;
+
     public Choice selectedMode;
     public Choice difficulty;
     public JButton resetButton;
@@ -86,8 +87,6 @@ public class View extends JPanel implements Observer{
 
     }
 
-
-
     public void assignModel(Model model){
         this.model=model;
     }
@@ -100,10 +99,6 @@ public class View extends JPanel implements Observer{
         }
         g.dispose();
 
-    }
-    public void update(Observable obs, Object obj){
-        System.out.println("wywolano update");
-        repaint();
     }
     void renderBG(Graphics g){
         System.out.println("bg rendered");

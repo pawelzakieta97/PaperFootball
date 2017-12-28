@@ -6,21 +6,26 @@ public class Pitch extends GameObject{
     int posX;
     int posY;
     int squareSize;
+    private GameState currentGameState;
 
     public GameState getCurrentGameState() {
+        forceUpdate();
         return currentGameState;
     }
 
     public void setCurrentGameState(GameState currentGameState) {
         this.currentGameState = currentGameState;
+        forceUpdate();
     }
 
-    public GameState currentGameState;
+
+
     public Pitch(int posX, int posY, int squareSize){
         this.posX=posX;
         this.posY=posY;
         this.squareSize =squareSize;
         currentGameState = new GameState();
+        forceUpdate();
     }
 
     protected void tick() {
@@ -119,6 +124,10 @@ public class Pitch extends GameObject{
         setChanged();
         notifyObservers();
         System.out.println(countObservers());
+    }
+    public void forceUpdate(){
+        setChanged();
+        notifyObservers();
     }
 
 }

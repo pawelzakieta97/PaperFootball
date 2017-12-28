@@ -3,19 +3,21 @@ package com.company;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Observable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
-public class MouseEventHandler extends Observable implements MouseListener{
+public class MouseEventHandler implements MouseListener{
+
+    private Controller controller;
+    private ExecutorService executor = Executors.newCachedThreadPool();
+    void assignController(Controller controller){
+        this.controller = controller;
+    }
 
     public void mouseClicked(MouseEvent event){
     }
 
-    private MouseEvent lastEvent;
-
-    public void setLastEvent(MouseEvent lastEvent) {
-        this.lastEvent = lastEvent;
-        setChanged();
-        notifyObservers();
-    }
 
     public void mousePressed(MouseEvent event){
     }
@@ -24,13 +26,16 @@ public class MouseEventHandler extends Observable implements MouseListener{
         if (event.getButton()==MouseEvent.BUTTON1){
             System.out.println("button 1");
             Point pos = new Point(event.getX(),event.getY());
-            //model.makePlayerMove(pos);
+            executor.execute(new Runnable(){
+                public void run(){
+                    controller.getModel().makePlayerMove(pos);
+                }
+            });
 
         }
         if (event.getButton()==MouseEvent.BUTTON3){
             System.out.println("button 3");
-            //model.getPitch().currentGameState.eraseMove();
-            //model.eraseMove();
+            controller.getModel().eraseMove();
         }
 
 

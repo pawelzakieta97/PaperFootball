@@ -10,7 +10,7 @@ import static com.company.Player.P2;
 
 import static com.company.Constants.*;
 
-//Class containing information about every attemptMove made during the game
+//Class containing information about every Move made during the game
 public class GameState{
     double rating; //0 is neutral, positive is good for p1, negative is good for p2/AI
     private LinkedList<Point> points = new LinkedList<Point>();

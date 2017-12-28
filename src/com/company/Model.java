@@ -48,9 +48,6 @@ public class Model{
         }
     }
 
-
-
-
     public void startNewGame(AppState mode){
 
         Pitch pitch = new Pitch(WIDTH/2-5*SQUARE_SIZE,HEIGHT/2-5*SQUARE_SIZE, SQUARE_SIZE);
@@ -68,12 +65,7 @@ public class Model{
     public void makePlayerMove(Point mousePos){
         if (pitch.getCurrentGameState().getCurrentPlayer()==Player.AI) return;
         pitch.attemptMove(mousePos);
-        //attempts making AI attemptMove (wont happen if PVP selected)
-//        setChanged();
-//        notifyObservers();
         makeAIMove(difficulty);
-
-
 
     }
 
@@ -85,9 +77,6 @@ public class Model{
         pitch.getCurrentGameState().generateTree(difficulty);
         System.out.println(pitch.getCurrentGameState().treeSize());
         pitch.setCurrentGameState(pitch.getCurrentGameState().getBestMove());
-//        setChanged();
-//        notifyObservers();
-
     }
 
     public void setCurrentGameMode(AppState mode){
@@ -97,9 +86,8 @@ public class Model{
     public void setMode(AppState mode){
         pitch.getCurrentGameState().setGameMode(mode);
     }
+
     public void eraseMove(){
         pitch.getCurrentGameState().eraseMove();
-//        setChanged();
-//        notifyObservers();
     }
 }
