@@ -1,5 +1,7 @@
 package com.company;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.LinkedList;
 import java.util.Observable;
 import static com.company.Constants.*;
@@ -7,6 +9,9 @@ import static com.company.Constants.*;
 public class Model{
     LinkedList<GameObject> objects = new LinkedList<GameObject>();
     private Controller controller;
+    private int difficulty=2;
+    private Pitch pitch;
+    protected PropertyChangeSupport propertyChangeSupport;
 
     public int getDifficulty() {
         return difficulty;
@@ -16,9 +21,6 @@ public class Model{
         this.difficulty = difficulty;
     }
 
-    private int difficulty=2;
-
-
     public Pitch getPitch() {
         return pitch;
     }
@@ -27,26 +29,26 @@ public class Model{
         this.pitch = pitch;
     }
 
-    private Pitch pitch;
-
     public Model(){
         pitch = new Pitch(WIDTH/2-5*SQUARE_SIZE,HEIGHT/2-5*SQUARE_SIZE, SQUARE_SIZE);
+        propertyChangeSupport = new PropertyChangeSupport(this);
     }
+    public void addPropertyChangeListener(PropertyChangeListener l){
+        propertyChangeSupport.addPropertyChangeListener(l);
+    }
+
+    protected void firePropertyChange(String propertyName, Pitch oldPitch, Pitch newPitch) {
+        propertyChangeSupport.firePropertyChange(propertyName, oldPitch, newPitch);
+    }
+
+
 
     public void assignController(Controller controller){
         this.controller= controller;
+        addPropertyChangeListener(controller);
     }
-    public void addObject(GameObject o){
-        this.objects.add(o);
-    }
-    public void removeObject(GameObject o){
-        this.objects.remove(o);
-    }
-    public void removeAllObjects(){
-        for (GameObject o :objects){
-            this.objects.remove(o);
-        }
-    }
+
+
 
     public void startNewGame(AppState mode){
 
@@ -54,18 +56,20 @@ public class Model{
         pitch.getCurrentGameState().setCurrentPlayer(Player.P1);
         pitch.getCurrentGameState().setGameMode(mode);
         this.pitch = pitch;
-        removeAllObjects();
-        addObject(pitch);
-//        setChanged();
-//        notifyObservers();
     }
 
     // Funkcja wywoływana przy kliknięciu lewego przycisku myszy. Jeśli jest tura gracza i wskazany ruch jest dozwolony,
     //jest on wykonywany.
     public void makePlayerMove(Point mousePos){
         if (pitch.getCurrentGameState().getCurrentPlayer()==Player.AI) return;
+        Pitch oldPitch = new Pitch(pitch);
         pitch.attemptMove(mousePos);
+        Pitch newPitch = new Pitch(pitch);
+        firePropertyChange("pitch",oldPitch,newPitch);
+        oldPitch = newPitch;
         makeAIMove(difficulty);
+        newPitch = new Pitch(pitch);
+        firePropertyChange("pitch",oldPitch,newPitch);
 
     }
 
@@ -88,6 +92,9 @@ public class Model{
     }
 
     public void eraseMove(){
+        Pitch oldPitch = new Pitch(pitch);
         pitch.getCurrentGameState().eraseMove();
+        Pitch newPitch = new Pitch(pitch);
+        firePropertyChange("pitch",oldPitch,newPitch);
     }
 }

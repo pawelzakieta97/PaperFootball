@@ -27,6 +27,16 @@ public class GameState{
         points.addLast(p);
         parent = null;
     }
+
+    //konstruktor kopiujacy (do wyswietlania- bez drzewa)
+    public GameState(GameState g){
+        for (Point p: g.points){
+            points.addLast(p.copy());
+        }
+        currentPlayer = g.currentPlayer;
+        gameMode = g.gameMode;
+
+    }
     //zwraca dziecko w nowym standardzie
     private GameState getChild(Direction direction){
         GameState child = new GameState();

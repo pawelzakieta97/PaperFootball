@@ -28,6 +28,15 @@ public class Pitch extends GameObject{
         forceUpdate();
     }
 
+    //konstruktor kopiujacy
+    public Pitch(Pitch p){
+        posX = p.posX;
+        posY = p.posY;
+        squareSize = p.squareSize;
+        currentGameState = new GameState(p.getCurrentGameState());
+
+    }
+
     protected void tick() {
 
     }

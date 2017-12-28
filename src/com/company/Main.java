@@ -5,7 +5,7 @@ public class Main {
         View view = new View("gra");
         Model model = new Model();
 
-        view.assignModel(model);
+        //view.assignModel(model);
 
         Controller controller = new Controller(view,model);
         model.assignController(controller);

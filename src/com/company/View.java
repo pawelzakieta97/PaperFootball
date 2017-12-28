@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
@@ -15,9 +16,20 @@ public class View extends JPanel{
     private Model model;
     private JFrame frame;
 
+    public Pitch getPitch() {
+        return pitch;
+    }
+
+    public void setPitch(Pitch pitch) {
+        this.pitch = pitch;
+    }
+
+    private Pitch pitch;
+
     public Choice selectedMode;
     public Choice difficulty;
     public JButton resetButton;
+
     //private Thread thread;
 
     public View(String title){
@@ -37,10 +49,6 @@ public class View extends JPanel{
         GridLayout toolbarLayout = new GridLayout(  1,3,20,10);
         toolbar.setLayout(toolbarLayout);
 
-        //toolbar.setRollover(true);
-        //toolbar.setFloatable(false);
-
-        //toolbar.add( Box.createHorizontalGlue() );
         resetButton = new JButton("Reset");
         selectedMode = new Choice();
         selectedMode.add("Player");
@@ -71,10 +79,6 @@ public class View extends JPanel{
         toolbar.add(modePanel);
         toolbar.add(difficultyPanel);
 
-
-        //toolbar.add(labelDifficulty);
-        //toolbar.add(difficulty);
-
         frame.add( toolbar , BorderLayout.NORTH );
         frame.pack();
 
@@ -87,19 +91,27 @@ public class View extends JPanel{
 
     }
 
-    public void assignModel(Model model){
+    /*public void assignModel(Model model){
         this.model=model;
+    }*/
+    public void modelPropertyChange(PropertyChangeEvent evt){
+        pitch = (Pitch)evt.getNewValue();
     }
 
     public void paint(Graphics g){
 
         renderBG(g);
-        for (GameObject o: model.objects){
-            o.render(g);
+        if (pitch!=null){
+            pitch.render(g);
         }
+
         g.dispose();
 
     }
+    public void render(GameObject o){
+
+    }
+
     void renderBG(Graphics g){
         System.out.println("bg rendered");
         Color paper = new Color(254,254,240);

@@ -3,11 +3,13 @@ package com.company;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Controller implements Observer{
+public class Controller implements Observer, PropertyChangeListener{
     private View view;
     private Model model;
     private MouseEventHandler mouseEventHandler;
@@ -28,6 +30,13 @@ public class Controller implements Observer{
         System.out.println("update z controllera");
         view.repaint();
     }
+
+    public void propertyChange(PropertyChangeEvent evt) {
+        view.modelPropertyChange(evt);
+        System.out.println("property change z controllera");
+        view.repaint();
+    }
+
 
     public Model getModel(){
         return this.model;
@@ -75,7 +84,7 @@ public class Controller implements Observer{
     }
     public void startNewGame(AppState gameMode){
         model.startNewGame(gameMode);
-        model.getPitch().addObserver(this);
+        //model.getPitch().addObserver(this);
         model.getPitch().forceUpdate();
     }
 }
