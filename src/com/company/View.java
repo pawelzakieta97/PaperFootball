@@ -8,7 +8,7 @@ import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.IOException;
 
-public class View extends JPanel{
+public class View{
     private JFrame frame;
     private JPanel gamePanel;
     private Pitch pitch;
@@ -35,6 +35,15 @@ public class View extends JPanel{
                 renderBG(g);
                 if (pitch!=null){
                     pitch.render(g);
+                }
+                if (pitch.getCurrentGameState().getScored()==1){
+                    renderWin((Graphics2D)g,"PLAYER 1 WON!");
+                }
+                if (pitch.getCurrentGameState().getScored()==-1){
+                    if (pitch.getCurrentGameState().getGameMode()==GameMode.PVP){
+                        renderWin((Graphics2D)g,"PLAYER 2 WON!");
+                    }
+                    else renderWin((Graphics2D)g,"YOU LOST");
                 }
 
                 g.dispose();
@@ -85,7 +94,7 @@ public class View extends JPanel{
         frame.pack();
         System.out.println(toolbarLayout.getColumns());
         frame.setVisible(true);
-        frame.add(this);
+        frame.add(gamePanel);
     }
 
     public void assignController(Controller c){
@@ -94,6 +103,7 @@ public class View extends JPanel{
     }
     public void modelPropertyChange(PropertyChangeEvent evt){
         pitch = (Pitch)evt.getNewValue();
+        System.out.println(pitch.getCurrentGameState().getScored());
     }
 
     public void paint(Graphics g){
@@ -106,7 +116,6 @@ public class View extends JPanel{
     }
 
     void renderBG(Graphics g){
-        System.out.println("bg rendered");
         Color paper = new Color(254,254,240);
         g.setColor(paper);
         g.fillRect(0,0,Constants.WIDTH, Constants.HEIGHT);
@@ -136,6 +145,17 @@ public class View extends JPanel{
             x=x+Constants.SQUARE_SIZE;
         }
 
+    }
+    void renderWin(Graphics2D g, String S){
+        g.setColor(new Color(0, 0, 0, 200));
+        /*Displaying the appropriate message*/
+        g.setFont(new Font("Helvetica", Font.PLAIN, 36));
+        g.setColor(new Color(200, 48, 46));
+        g.drawString(S, (int)(pitch.getPosX()+0.3*pitch.getSquareSize()),(int)(pitch.getPosY()-1*pitch.getSquareSize()));
+    }
+
+    public void render(){
+        gamePanel.repaint();
     }
 
 }

@@ -3,10 +3,33 @@ package com.company;
 import java.awt.*;
 
 public class Pitch extends GameObject{
-    int posX;
-    int posY;
-    int squareSize;
+    private int posX;
+    private int posY;
+    private int squareSize;
     private GameState currentGameState;
+
+    public int getPosX() {
+        return posX;
+    }
+    public void setPosX(int posX) {
+        this.posX = posX;
+    }
+
+    public int getPosY() {
+        return posY;
+    }
+    public void setPosY(int posY) {
+        this.posY = posY;
+    }
+
+    public int getSquareSize() {
+        return squareSize;
+    }
+    public void setSquareSize(int squareSize) {
+        this.squareSize = squareSize;
+    }
+
+
 
     public GameState getCurrentGameState() {
         return currentGameState;
@@ -38,7 +61,7 @@ public class Pitch extends GameObject{
     public void render(Graphics g){
         g.setColor(Color.green);
         currentGameState.render(g, new Point(posX,posY), squareSize);
-        g.setColor(Color.black);
+        g.setColor(Constants.PitchColor);
         int borderWidth=2;
         g.fillRect(posX,posY-borderWidth/2,10*squareSize,borderWidth);              //horizontal upper line
         g.fillRect(posX,posY+8*squareSize-borderWidth/2,10*squareSize,borderWidth); //horizontal lower line

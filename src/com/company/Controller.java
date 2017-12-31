@@ -27,7 +27,6 @@ public class Controller implements Observer, PropertyChangeListener{
         mouseEventHandler.assignController(this);
         //view.addMouseListener(mouseEventHandler);
         view.assignController(this);
-        view.
         model.assignController(this);
 
     }
@@ -44,13 +43,13 @@ public class Controller implements Observer, PropertyChangeListener{
     }
     public void update(Observable obs, Object obj){
         System.out.println("update z controllera");
-        view.repaint();
+        view.render();
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
         view.modelPropertyChange(evt);
         System.out.println("property change z controllera");
-        view.repaint();
+        view.render();
     }
 
 

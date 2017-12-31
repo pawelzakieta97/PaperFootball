@@ -9,16 +9,34 @@ import static com.company.Player.P2;
 
 import static com.company.Constants.*;
 
-//Class containing information about every Move made during the game
+/**
+ * Objects of this class contain information about every move that has been made.
+ * It also provides methods used to make player or AI move
+ */
 public class GameState{
-    double rating; //0 is neutral, positive is good for p1, negative is good for p2/AI
+    /**
+     * List of points in chronological order
+     */
     private LinkedList<Point> points = new LinkedList<Point>();
+    /**
+     * In order to calculate AI move, a tree of possible moves is generated.
+     * Each GameState object contains a List that can be filled with all possible situations and parent node
+     */
     private LinkedList<GameState> children = new LinkedList<GameState>();
-    private int maxBouncesNum=5; //number of bounces that allowed per one attemptMove (with more complex states this decreases calculation time)
-    private int scored = 0; //1 if P1 scored, -1 if P2 scored
+    private GameState parent;
+    /**
+     * in order to decrease time of calculations in case of high number of possible combinations, a maximum number of
+     * considered bounces in move is introduced.
+     */
+    private int maxBouncesNum=5;
+    /**
+     * this value contains information whether or not in current GameState, a player or AI has scored
+     * 1 if P1 scored, -1 if AI or P2 scored, 0 if none
+     */
+    private int scored = 0;
     private Player currentPlayer=Player.P1;
     public GameMode gameMode;
-    private GameState parent;
+
 
 
     public GameState(){
@@ -27,16 +45,23 @@ public class GameState{
         parent = null;
     }
 
-    //konstruktor kopiujacy (do wyswietlania- bez drzewa)
+    /**
+     * Copying constructor
+     * @param g
+     */
     public GameState(GameState g){
         for (Point p: g.points){
             points.addLast(p.copy());
         }
         currentPlayer = g.currentPlayer;
         gameMode = g.gameMode;
+        scored = g.scored;
 
     }
-    //zwraca dziecko w nowym standardzie
+
+    public int getScored() {
+        return scored;
+    }
     private GameState getChild(Direction direction){
         GameState child = new GameState();
         Point next = this.getLast().getNext(direction);
@@ -61,15 +86,15 @@ public class GameState{
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
-
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
-
-
-
-    //Checks if the line is not occupied
+    /**
+     * This method indicates whether or not player is permitted to make a move in specified direction
+     * @param direction This is the direction to be checked
+     * @return Boolean value - permitted or not
+     */
     public boolean isPermitted(Direction direction){
         if (points.size()<2) {
             return true;
@@ -117,6 +142,12 @@ public class GameState{
         }
         return true;
     }
+
+    /**
+     * This method is used to switch between players.
+     * Depending on current game mode (PVP or PVE) and current player, this method decides which player's turn is next
+     * and sets them as currentPlayer
+     */
     void switchPlayers(){
         GameMode mode = gameMode;
         //System.out.println("swittching players");
@@ -149,7 +180,13 @@ public class GameState{
             }
         }
     }
-    //returns true if after moving to this position, you bounce
+
+    /**
+     * This method checks whether after moving to point p player should bounce and continue their move or not
+     * @param p Method checks if this the game state already consists pont of this coordinates
+     * or the point is on an edge
+     * @return Boolean value indicating whether player bounces
+     */
     private boolean bounce(Point p){
         for (Point point: points){
             if (p.equals(point)){
@@ -162,6 +199,12 @@ public class GameState{
         return false;
     }
 
+    /**
+     * This method adds a point to a list of points based on direction of a move. This method DOES NOT check if the
+     * move is permitted (this is checked in an earlier state of attempting a move). The method also switches players
+     * if their move ends.
+     * @param direction This is the direction of a move
+     */
     public void move(Direction direction){
         Point newPoint = points.getLast().getNext(direction);
         newPoint.setMadeBy(currentPlayer);
@@ -171,6 +214,13 @@ public class GameState{
 
         points.addLast(newPoint);
     }
+
+    /**
+     * This method renders a line that has been made on specified pitch
+     * @param g
+     * @param pitchPos This parameter determines where the top left corner of the pitch is
+     * @param squareSize This parameter determines the length of a single line
+     */
     void render(Graphics g, Point pitchPos, int squareSize){
         for (int i=0; i<points.size()-1; i++){
             g.setColor(P1Color);
@@ -197,25 +247,37 @@ public class GameState{
         int y=pitchPos.getY()+4*squareSize+ballPos.getY()*squareSize-radius;
         g.fillOval(x,y,2*radius,2*radius);
 
-        /*for (GameState child: children){
-            child.paint(g, pitchPos, squareSize);
-        }*/
     }
+
+    /**
+     * This method erases a move and switches player accordingly
+     */
     public void eraseMove(){
         if (points.size()<2){
             return;
         }
+        if (!bounce(getLast())){
+            switchPlayers();
+        }
         Player last = getLast().getMadeBy();
         while (points.getLast().getMadeBy()==last){
             points.removeLast();
-            //System.out.println("usuwanie");
         }
-        switchPlayers();
+
     }
+
+    /**
+     * @return The last point that has been added to the list
+     */
     public Point getLast(){
         return points.getLast();
 
     }
+
+    /**
+     * copies a gameState (without tree info). Redundant because of copying constructor.
+     * @return Copied GameState
+     */
     private GameState copy(){
         GameState n = new GameState();
         for (int i = 1; i<points.size();i++){
@@ -226,10 +288,16 @@ public class GameState{
         n.scored = scored;
         return n;
     }
+
+    /**
+     * This method finds all game states that are possible to reach within one turn assuming no more
+     * than a specified number of bounces
+     * @param maxBounces This paramenter limits maximum number of bounces that are considered
+     * @return A list of all generated game states
+     */
     public LinkedList<GameState> findChildren(int maxBounces){
         LinkedList<GameState> states = new LinkedList<GameState>();
         for (Direction dir : Direction.values()){
-            //dir = Direction.R;
             GameState n=this.copy();
             if (n.isPermitted(dir)){
                 Point p = n.getLast().getNext(dir);
@@ -242,7 +310,6 @@ public class GameState{
                 }
                 else{
                     n.move(dir);
-                    //System.out.println("dodawanie dziecka");
                     states.addLast(n);
                 }
             }
@@ -250,6 +317,10 @@ public class GameState{
         return states;
     }
 
+    /**
+     * This method generates a tree of all possible moves starting from this object.
+     * @param depth This parameter determines the depth of generated tree
+     */
     public void generateTree(int depth){
         if (depth==0){
             return;
@@ -259,6 +330,14 @@ public class GameState{
             child.generateTree(depth-1);
         }
     }
+
+    /**
+     * This method calculates how beneficial for Player 1 the CURRENT situation is. It takes into consideration ONLY
+     * the position of the last made point- the closer to the P2 or AI goal the higher the rating.
+     * AI uses this value to determine the best move.
+     * @return A rating. 0 means the last point is in the middle, not favorable for any side.
+     * Positive rating indicates the advantage of P1
+     */
     public double getCurrentRating(){
         float k=0.0f;// for each point closer to the enemy goal gets k points
         float goalRating=9999;
@@ -283,6 +362,11 @@ public class GameState{
             }
         }*/
     }
+
+    /**
+     * This method
+     * @return
+     */
     public double getRealRating(){//AI needs low rating
         Player current = getCurrentPlayer();
         double bestRating = 69000;
@@ -333,7 +417,7 @@ public class GameState{
                 }
             }
         }
-        System.out.println("best rating");
+        System.out.print("best rating: ");
         System.out.println(bestRating);
         return best;
     }
@@ -345,6 +429,9 @@ public class GameState{
         }
         for (GameState child: children){
             a+=child.treeSize();
+        }
+        if (a==0){
+            scored = 1;
         }
         return a;
     }
