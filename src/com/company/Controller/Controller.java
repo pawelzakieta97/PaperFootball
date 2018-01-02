@@ -1,4 +1,8 @@
-package com.company;
+package com.company.Controller;
+
+import com.company.Const.GameMode;
+import com.company.Model.Model;
+import com.company.View;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -49,6 +53,7 @@ public class Controller implements Observer, PropertyChangeListener{
     public void propertyChange(PropertyChangeEvent evt) {
         view.modelPropertyChange(evt);
         System.out.println("property change z controllera");
+        System.out.println(model.getPitch().getCurrentGameState().checkStuck());
         view.render();
     }
 

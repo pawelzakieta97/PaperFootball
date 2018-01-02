@@ -1,13 +1,16 @@
-package com.company;
+package com.company.Model;
+
+import com.company.Const.Direction;
+import com.company.Const.GameMode;
 
 import java.awt.*;
 import java.util.LinkedList;
 
-import static com.company.GameMode.PVE;
-import static com.company.Player.P1;
-import static com.company.Player.P2;
+import static com.company.Const.GameMode.PVE;
+import static com.company.Model.Player.P1;
+import static com.company.Model.Player.P2;
 
-import static com.company.Constants.*;
+import static com.company.Const.Constants.*;
 
 /**
  * Objects of this class contain information about every move that has been made.
@@ -34,6 +37,10 @@ public class GameState{
      * 1 if P1 scored, -1 if AI or P2 scored, 0 if none
      */
     private int scored = 0;
+
+
+
+    private boolean stuck = false;
     private Player currentPlayer=Player.P1;
     public GameMode gameMode;
 
@@ -68,6 +75,13 @@ public class GameState{
         child.points.removeLast();
         child.points.addLast(next);
         return child;
+    }
+    public boolean isStuck() {
+        return stuck;
+    }
+
+    public void setStuck(boolean stuck) {
+        this.stuck = stuck;
     }
     private GameState getCombined(){
         if (parent==null){
@@ -104,7 +118,7 @@ public class GameState{
             return false;
         }
 
-        if (Boundries.score(last.getNext(direction))!=0){
+        if (Boundaries.score(last.getNext(direction))!=0){
             return true;
         }
 
@@ -124,20 +138,20 @@ public class GameState{
             }
 
         }
-        if (Boundries.isInCorner(last.getNext(direction))){
+        if (Boundaries.isInCorner(last.getNext(direction))){
             return false;
         }
-        if (Boundries.isOnHorizontal(last)){
-            if (Boundries.isOnHorizontal(last.getNext(direction))){
+        if (Boundaries.isOnHorizontal(last)){
+            if (Boundaries.isOnHorizontal(last.getNext(direction))){
                 return false;
             }
         }
-        if (Boundries.isOnVertical(last)){
-            if (Boundries.isOnVertical(last.getNext(direction))){
+        if (Boundaries.isOnVertical(last)){
+            if (Boundaries.isOnVertical(last.getNext(direction))){
                 return false;
             }
         }
-        if (Boundries.isOutside(last.getNext(direction))){
+        if (Boundaries.isOutside(last.getNext(direction))){
             return false;
         }
         return true;
@@ -193,7 +207,7 @@ public class GameState{
                 return true;
             }
         }
-        if (Boundries.isOnVertical(p) || Boundries.isOnHorizontal(p)){
+        if (Boundaries.isOnVertical(p) || Boundaries.isOnHorizontal(p)){
             return true;
         }
         return false;
@@ -292,11 +306,12 @@ public class GameState{
     /**
      * This method finds all game states that are possible to reach within one turn assuming no more
      * than a specified number of bounces
-     * @param maxBounces This paramenter limits maximum number of bounces that are considered
+     * @param maxBounces This parameter limits maximum number of bounces that are considered
      * @return A list of all generated game states
      */
     public LinkedList<GameState> findChildren(int maxBounces){
         LinkedList<GameState> states = new LinkedList<GameState>();
+
         for (Direction dir : Direction.values()){
             GameState n=this.copy();
             if (n.isPermitted(dir)){
@@ -304,8 +319,8 @@ public class GameState{
 
                 if (n.bounce(p)){
                     if (maxBounces>0){
-                    n.move(dir);
-                    states.addAll(n.findChildren(maxBounces-1));
+                        n.move(dir);
+                        states.addAll(n.findChildren(maxBounces-1));
                     }
                 }
                 else{
@@ -314,8 +329,49 @@ public class GameState{
                 }
             }
         }
+        /*if (states.isEmpty()){
+            setStuck(true);
+        }*/
         return states;
     }
+
+    /**
+     * This method is a simplified version of findChildren. Its purpose is to determine whether or not there is ANY
+     * possible move.
+     * @return A GameState object that is possible to achieve within one tour
+     */
+    public GameState findAnyChild(){
+        for (Direction dir : Direction.values()){
+            GameState n=this.copy();
+            if (n.isPermitted(dir)){
+                Point p = n.getLast().getNext(dir);
+
+                if (!n.bounce(p)){
+                    return n;
+                }
+                else{
+                    n.move(dir);
+                    n = n.findAnyChild();
+                    if (n!=null){
+                        return n;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This method checks if the game is supposed to end due to an inability to make any move whatsoever
+     * @return boolean value indicating being "stuck"
+     */
+    public boolean checkStuck(){
+        if (findAnyChild()==null){
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * This method generates a tree of all possible moves starting from this object.
@@ -341,12 +397,12 @@ public class GameState{
     public double getCurrentRating(){
         float k=0.0f;// for each point closer to the enemy goal gets k points
         float goalRating=9999;
-        if (Boundries.score(getLast())==1){
+        if (Boundaries.score(getLast())==1){
             scored = 1;
             return goalRating;
 
         }
-        if (Boundries.score(getLast())==-1){
+        if (Boundaries.score(getLast())==-1){
             scored = -1;
             return -goalRating;
         }
@@ -364,8 +420,15 @@ public class GameState{
     }
 
     /**
-     * This method
-     * @return
+     * This method is basically the essence of the AI decision making process. After generating previously mentioned
+     * tree of game states possible to achieve within a certain amount of tours, all the leaves that share a common
+     * parent receive rating(using getCurrentRating method). The algorithm assumes, that the player who is going to
+     * make the last currently considered move is going to choose the one that will lead to the leaf with the rating
+     * that is most beneficial for them. That rating is then assigned to the parent of considered leaves. Then, the
+     * method assign an "expected" rating for each node (hence the name- achieved rating is more realistic than just
+     * current rating since it assumes the opponent's competence) in a similar manner.
+     * @return The method returns a double number that is the rating of a leaf (i.e. the state of a game in a certain
+     * amount of moves assuming the game proceeds the way the algorithm predicted)
      */
     public double getRealRating(){//AI needs low rating
         Player current = getCurrentPlayer();
@@ -396,6 +459,12 @@ public class GameState{
         }
         return bestRating;
     }
+
+    /**
+     * This method applies getRealRating on every child of considered game state in order to find the child that will
+     * most likely lead to a beneficial situation in a couple moves.
+     * @return GameState object that is a reference to the best child.
+     */
     public GameState getBestMove(){
         double bestRating=100000;
         if (currentPlayer==P1){
@@ -422,6 +491,10 @@ public class GameState{
         return best;
     }
 
+    /**
+     * This method calculates the amount of nodes a tree beginning at this GameState has.
+     * @return number of nodes of a tree
+     */
     public int treeSize(){
         int a = 0;
         if (children.size()==0){

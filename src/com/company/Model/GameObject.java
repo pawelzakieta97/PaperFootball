@@ -1,4 +1,4 @@
-package com.company;
+package com.company.Model;
 
 import java.awt.*;
 import java.util.Observable;

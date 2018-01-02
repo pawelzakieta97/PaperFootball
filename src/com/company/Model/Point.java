@@ -1,4 +1,6 @@
-package com.company;
+package com.company.Model;
+
+import com.company.Const.Direction;
 
 public class Point {
     public Point(int xx, int yy){

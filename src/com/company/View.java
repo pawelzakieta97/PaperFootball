@@ -1,5 +1,10 @@
 package com.company;
 
+import com.company.Const.Constants;
+import com.company.Const.GameMode;
+import com.company.Controller.Controller;
+import com.company.Model.Pitch;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -40,7 +45,7 @@ public class View{
                     renderWin((Graphics2D)g,"PLAYER 1 WON!");
                 }
                 if (pitch.getCurrentGameState().getScored()==-1){
-                    if (pitch.getCurrentGameState().getGameMode()==GameMode.PVP){
+                    if (pitch.getCurrentGameState().getGameMode()== GameMode.PVP){
                         renderWin((Graphics2D)g,"PLAYER 2 WON!");
                     }
                     else renderWin((Graphics2D)g,"YOU LOST");
@@ -148,7 +153,6 @@ public class View{
     }
     void renderWin(Graphics2D g, String S){
         g.setColor(new Color(0, 0, 0, 200));
-        /*Displaying the appropriate message*/
         g.setFont(new Font("Helvetica", Font.PLAIN, 36));
         g.setColor(new Color(200, 48, 46));
         g.drawString(S, (int)(pitch.getPosX()+0.3*pitch.getSquareSize()),(int)(pitch.getPosY()-1*pitch.getSquareSize()));

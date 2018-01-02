@@ -1,10 +1,13 @@
-package com.company;
+package com.company.Model;
+
+import com.company.Controller.Controller;
+import com.company.Const.GameMode;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedList;
 
-import static com.company.Constants.*;
+import static com.company.Const.Constants.*;
 
 public class Model{
     LinkedList<GameObject> objects = new LinkedList<GameObject>();

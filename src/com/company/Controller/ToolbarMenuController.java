@@ -1,4 +1,7 @@
-package com.company;
+package com.company.Controller;
+
+import com.company.Const.GameMode;
+import com.company.View;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

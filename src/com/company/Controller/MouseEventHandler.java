@@ -1,11 +1,11 @@
-package com.company;
+package com.company.Controller;
+
+import com.company.Model.Point;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class MouseEventHandler implements MouseListener{
 

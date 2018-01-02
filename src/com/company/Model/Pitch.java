@@ -1,8 +1,11 @@
-package com.company;
+package com.company.Model;
+
+import com.company.Const.Constants;
+import com.company.Const.Direction;
 
 import java.awt.*;
 
-public class Pitch extends GameObject{
+public class Pitch extends GameObject {
     private int posX;
     private int posY;
     private int squareSize;
