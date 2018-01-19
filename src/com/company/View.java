@@ -159,7 +159,7 @@ public class View{
     }
 
     public void render(){
-        gamePanel.repaint();
+        gamePanel.repaint(pitch.getPosX()-pitch.getSquareSize(), pitch.getPosY(),12*pitch.getSquareSize(),8*pitch.getSquareSize());
     }
 
 }

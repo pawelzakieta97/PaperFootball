@@ -95,8 +95,6 @@ public class Model{
      * checks if the player is actually supposed to make a move (and not the AI). If so, the method calls an
      * attemptMove method form the pitch. That method will then determine if the move is valid and if it is- will modify
      * the GameState object. Next, the property change notification is fired to re-render the pitch.
-     * In order to minimalize the amount of Model-Controller communication, this method will
-     * always attempt to make na AI move right after the player's (if it's not AI's move, nothing will happen).
      *
      * @param mousePos Point objects that contains the coordinates of the mouse one the window.
      */
@@ -106,13 +104,12 @@ public class Model{
         pitch.attemptMove(mousePos);
         Pitch newPitch = new Pitch(pitch);
         firePropertyChange("pitch",oldPitch,newPitch);
-        makeAIMove(difficulty);
     }
 
     //Funkcja wynonywująca ruch AI jeśli jest jego tura.
     /**
      * This method manages the process of making the move by the computer. First of all, it checks if it's AI's turn.
-     * Than, it caps the difficulty (1 or 2 to avoid lengthy calculations). The tree of possible moves is generated and
+     * Then, it caps the difficulty (1 or 2 to avoid lengthy calculations). The tree of possible moves is generated and
      * is than used to find the best move. The resulting GameState object replaces the current game state. Lastly, the
      * property change notification is fired.
      *
