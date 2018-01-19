@@ -40,7 +40,6 @@ public class GameState{
 
 
 
-    private boolean stuck = false;
     private Player currentPlayer=Player.P1;
     public GameMode gameMode;
 
@@ -76,21 +75,7 @@ public class GameState{
         child.points.addLast(next);
         return child;
     }
-    public boolean isStuck() {
-        return stuck;
-    }
 
-    public void setStuck(boolean stuck) {
-        this.stuck = stuck;
-    }
-    private GameState getCombined(){
-        if (parent==null){
-            return this;
-        }
-        GameState whole;
-        whole = parent.getCombined();
-        return null;
-    }
     public GameMode getGameMode() {
         return gameMode;
     }
@@ -193,12 +178,6 @@ public class GameState{
                 currentPlayer = Player.AI;
             }
         }
-        if (currentPlayer == Player.AI) {
-            System.out.println("AI");
-        }
-        else{
-            System.out.println("Player");
-        }
 
     }
 
@@ -287,6 +266,7 @@ public class GameState{
         while (points.getLast().getMadeBy()==last){
             points.removeLast();
         }
+        updateScored();
 
     }
 
@@ -375,10 +355,12 @@ public class GameState{
      * This method checks if the game is supposed to end due to an inability to make any move whatsoever
      * @return boolean value indicating being "stuck"
      */
-    public boolean checkStuck(){
+    public boolean isStuck(){
         if (findAnyChild()==null){
+            //stuck = true;
             return true;
         }
+        //stuck = false;
         return false;
     }
 
@@ -517,6 +499,15 @@ public class GameState{
             scored = 1;
         }
         return a;
+    }
+    public boolean gameEnded(){
+        if (Boundaries.score(getLast())!=0 || isStuck()){
+            return true;
+        }
+        return false;
+    }
+    public void updateScored(){
+        scored = Boundaries.score(getLast());
     }
     
 }

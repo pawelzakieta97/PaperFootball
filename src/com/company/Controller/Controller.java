@@ -63,7 +63,7 @@ public class Controller implements PropertyChangeListener{
     public void propertyChange(PropertyChangeEvent evt) {
         view.modelPropertyChange(evt);
         System.out.println("property change z controllera");
-        System.out.println(model.getPitch().getCurrentGameState().checkStuck());
+        System.out.println(model.getPitch().getCurrentGameState().isStuck());
         view.render();
     }
 

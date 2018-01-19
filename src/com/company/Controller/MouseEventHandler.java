@@ -35,6 +35,10 @@ public class MouseEventHandler implements MouseListener{
      */
     public void mouseReleased(MouseEvent event){
         if (event.getButton()==MouseEvent.BUTTON1){
+
+            if (controller.getModel().getPitch().getCurrentGameState().gameEnded()){
+                return;
+            }
             System.out.println("button 1");
             Point pos = new Point(event.getX(),event.getY());
             executor.execute(new Runnable(){

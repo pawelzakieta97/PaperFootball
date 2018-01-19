@@ -4,6 +4,7 @@ import com.company.Const.Constants;
 import com.company.Const.GameMode;
 import com.company.Controller.Controller;
 import com.company.Model.Pitch;
+import com.company.Model.Player;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,7 +18,7 @@ public class View{
     private JFrame frame;
     private JPanel gamePanel;
     private Pitch pitch;
-
+    private boolean gameEnded = false;
     private Controller controller;
 
     public Choice selectedMode;
@@ -41,14 +42,36 @@ public class View{
                 if (pitch!=null){
                     pitch.render(g);
                 }
+                pitch.getCurrentGameState().updateScored();
                 if (pitch.getCurrentGameState().getScored()==1){
-                    renderWin((Graphics2D)g,"PLAYER 1 WON!");
+                    if (pitch.getCurrentGameState().getGameMode()== GameMode.PVP){
+                        renderWin((Graphics2D)g,"PLAYER 1 WON!");
+                    }
+                    else renderWin((Graphics2D)g,"YOU WON!");
                 }
                 if (pitch.getCurrentGameState().getScored()==-1){
                     if (pitch.getCurrentGameState().getGameMode()== GameMode.PVP){
                         renderWin((Graphics2D)g,"PLAYER 2 WON!");
                     }
                     else renderWin((Graphics2D)g,"YOU LOST");
+                }
+
+                //System.out.println(pitch.getCurrentGameState().isStuck());
+                if (pitch.getCurrentGameState().isStuck()){
+                    if (pitch.getCurrentGameState().getCurrentPlayer() == Player.P2){
+                        renderWin((Graphics2D)g,"PLAYER 1 WON!");
+                    }
+                    else if (pitch.getCurrentGameState().getCurrentPlayer() == Player.P1){
+                        if (pitch.getCurrentGameState().getGameMode() == GameMode.PVP){
+                            renderWin((Graphics2D)g,"PLAYER 2 WON!");
+                        }
+                        else {
+                            renderWin((Graphics2D)g,"YOU LOST");
+                        }
+                    }
+                    else {
+                        renderWin((Graphics2D)g,"YOU WON!");
+                    }
                 }
 
                 g.dispose();
@@ -159,7 +182,8 @@ public class View{
     }
 
     public void render(){
-        gamePanel.repaint(pitch.getPosX()-pitch.getSquareSize(), pitch.getPosY(),12*pitch.getSquareSize(),8*pitch.getSquareSize());
+        gamePanel.repaint(pitch.getPosX()-pitch.getSquareSize(), pitch.getPosY()-2*pitch.getSquareSize(),
+                12*pitch.getSquareSize(),10*pitch.getSquareSize());
     }
 
 }
