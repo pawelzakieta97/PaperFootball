@@ -1,6 +1,7 @@
 package com.company.Controller;
 
 import com.company.Const.GameMode;
+import com.company.Model.Player;
 import com.company.View;
 
 import java.awt.event.ActionEvent;
@@ -46,6 +47,10 @@ public class ToolbarMenuController {
                 }
                 if (view.selectedMode.getSelectedIndex()==1) {
                     controller.getModel().getPitch().getCurrentGameState().setGameMode(GameMode.PVE);
+                    if (controller.getModel().getPitch().getCurrentGameState().getCurrentPlayer() == Player.P2){
+                        controller.getModel().getPitch().getCurrentGameState().switchPlayers();
+                        controller.getModel().makeAIMove(controller.getModel().getDifficulty());
+                    }
                     view.difficulty.setEnabled(true);
                 }
 

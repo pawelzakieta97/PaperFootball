@@ -4,8 +4,9 @@ import com.company.Const.Constants;
 import com.company.Const.Direction;
 
 import java.awt.*;
+import java.util.Observable;
 
-public class Pitch extends GameObject {
+public class Pitch {
     private int posX;
     private int posY;
     private int squareSize;

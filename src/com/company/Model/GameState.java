@@ -162,7 +162,7 @@ public class GameState{
      * Depending on current game mode (PVP or PVE) and current player, this method decides which player's turn is next
      * and sets them as currentPlayer
      */
-    void switchPlayers(){
+    public void switchPlayers(){
         GameMode mode = gameMode;
         //System.out.println("swittching players");
         if (mode== GameMode.PVP){
@@ -190,9 +190,16 @@ public class GameState{
                 currentPlayer = Player.AI;
             }
             else if (currentPlayer== P2){
-                currentPlayer = Player.P1;
+                currentPlayer = Player.AI;
             }
         }
+        if (currentPlayer == Player.AI) {
+            System.out.println("AI");
+        }
+        else{
+            System.out.println("Player");
+        }
+
     }
 
     /**
@@ -229,6 +236,7 @@ public class GameState{
         points.addLast(newPoint);
     }
 
+
     /**
      * This method renders a line that has been made on specified pitch
      * @param g
@@ -236,6 +244,7 @@ public class GameState{
      * @param squareSize This parameter determines the length of a single line
      */
     void render(Graphics g, Point pitchPos, int squareSize){
+        g.setColor(P1Color);
         for (int i=0; i<points.size()-1; i++){
             g.setColor(P1Color);
             int x1=pitchPos.getX()+5*squareSize+points.get(i).getX()*squareSize;
@@ -264,7 +273,8 @@ public class GameState{
     }
 
     /**
-     * This method erases a move and switches player accordingly
+     * This method erases a move by deleting all points from the end of the list made by the last moving player
+     * and switches player accordingly.
      */
     public void eraseMove(){
         if (points.size()<2){
