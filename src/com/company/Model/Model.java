@@ -119,6 +119,7 @@ public class Model{
         if (pitch.getCurrentGameState().getCurrentPlayer()!=Player.AI) return;
         if (difficulty<1) difficulty =1;
         if (difficulty>2) difficulty = 2;
+        //difficulty = 3;
         Pitch oldPitch = new Pitch(pitch);
         pitch.getCurrentGameState().generateTree(difficulty);
         System.out.println(pitch.getCurrentGameState().treeSize());

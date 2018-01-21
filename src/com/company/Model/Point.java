@@ -2,6 +2,9 @@ package com.company.Model;
 
 import com.company.Const.Direction;
 
+/**
+ * This class represents a single point on the pitch. An array of these describes how the game has been played
+ */
 public class Point {
     public Point(int xx, int yy){
         x=xx;
@@ -43,7 +46,12 @@ public class Point {
         return (this.x==p.x && this.y==p.y);
 
     }
-    //zwraca pozycję punktu w kierunku podanym w argumencie
+
+    /**
+     * This method returns a Point objects that is in a specified direction from this
+     * @param direction
+     * @return
+     */
     public Point getNext(Direction direction){
         Point next= new Point(this.x,this.y);
         switch (direction){
@@ -81,10 +89,5 @@ public class Point {
 
     public String toString() {
         return ("("+getX()+","+getY()+")");
-    }
-    public double distance(Point a){
-        double dx=getX()-a.getX();
-        double dy=getY()-a.getY();
-        return Math.sqrt(dx*dx+dy*dy);
     }
 }

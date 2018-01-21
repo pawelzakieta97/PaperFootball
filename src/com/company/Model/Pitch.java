@@ -6,6 +6,11 @@ import com.company.Const.Direction;
 import java.awt.*;
 import java.util.Observable;
 
+/**
+ * This class represents the pitch. It contains information on its position amd size as well as the entire game
+ * in currentGameState object.
+ */
+
 public class Pitch {
     private int posX;
     private int posY;
@@ -52,7 +57,10 @@ public class Pitch {
         currentGameState = new GameState();
     }
 
-    //konstruktor kopiujacy
+    /**
+     * copying constructor
+     * @param p
+     */
     public Pitch(Pitch p){
         posX = p.posX;
         posY = p.posY;
@@ -61,7 +69,10 @@ public class Pitch {
 
     }
 
-
+    /**
+     * This method renders the pitch.
+     * @param g
+     */
     public void render(Graphics g){
         g.setColor(Color.green);
         currentGameState.render(g, new Point(posX,posY), squareSize);
@@ -83,11 +94,21 @@ public class Pitch {
         g.fillRect(posX+11*squareSize-borderWidth/2,posY+3*squareSize-borderWidth/2,borderWidth,2*squareSize);
 
     }
-    //converts pitch coordinates to view coordinates
+
+    /**
+     * This method converts pitch coordinates to view coordinates
+     * @param pitch
+     * @return
+     */
     public Point pitch2view(Point pitch){
         return new Point(posX+5*squareSize+pitch.getX()*squareSize,posY+4*squareSize+pitch.getY()*squareSize);
     }
-    //converts view coordinates to pitch coordinates (returns the closest one)
+
+    /**
+     * converts view coordinates to pitch coordinates (returns the closest one)
+     * @param view
+     * @return
+     */
     public Point view2pitch(Point view){
         Double x = new Double(view.getX()-posX-6*squareSize)/squareSize+10.5;
         Double y = new Double(view.getY()-posY-5*squareSize)/squareSize+10.5;
@@ -95,7 +116,11 @@ public class Pitch {
         return pitch;
 
     }
-    //moves to clicked position if its permitted
+
+    /**
+     * moves to clicked position if its permitted
+     * @param viewPos
+     */
     public void attemptMove(Point viewPos){
 
         Point last = currentGameState.getLast();

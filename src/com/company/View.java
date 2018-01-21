@@ -14,6 +14,9 @@ import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This class represents View component of the MVC template. It contains JPanel field
+ */
 public class View{
     private JFrame frame;
     private JPanel gamePanel;
@@ -33,7 +36,10 @@ public class View{
         this.pitch = pitch;
     }
 
-
+    /**
+     * The default constructor. It creates all the necessary components.
+     * @param title
+     */
     public View(String title){
 
         gamePanel = new JPanel(){
@@ -125,6 +131,10 @@ public class View{
         frame.add(gamePanel);
     }
 
+    /**
+     * This method's purpose is to add a mouseEventHandler object as a mouse listener
+     * @param c
+     */
     public void assignController(Controller c){
         controller = c;
         gamePanel.addMouseListener(controller.getMouseEventHandler());
@@ -134,15 +144,19 @@ public class View{
         System.out.println(pitch.getCurrentGameState().getScored());
     }
 
-    public void paint(Graphics g){
+    /*public void paint(Graphics g){
 
         renderBG(g);
         if (pitch!=null){
             pitch.render(g);
         }
         g.dispose();
-    }
+    }*/
 
+    /**
+     * This method renders a background- checker and an image of note spring
+     * @param g
+     */
     void renderBG(Graphics g){
         Color paper = new Color(254,254,240);
         g.setColor(paper);
@@ -159,6 +173,10 @@ public class View{
         g.drawImage(img, 0, 0,null);
     }
 
+    /**
+     * This method renders lines in checker-like fashion
+     * @param g
+     */
     void renderChecker(Graphics g){
         int x=0, y=0;
         Color grid = new Color(170,220,255);
@@ -174,6 +192,12 @@ public class View{
         }
 
     }
+
+    /**
+     * This method renders a text noitification above the pitch
+     * @param g
+     * @param S
+     */
     void renderWin(Graphics2D g, String S){
         g.setColor(new Color(0, 0, 0, 200));
         g.setFont(new Font("Helvetica", Font.PLAIN, 36));
@@ -181,6 +205,9 @@ public class View{
         g.drawString(S, (int)(pitch.getPosX()+0.3*pitch.getSquareSize()),(int)(pitch.getPosY()-1*pitch.getSquareSize()));
     }
 
+    /**
+     * This method repaints a specified section of the window - the area of the pitch
+     */
     public void render(){
         gamePanel.repaint(pitch.getPosX()-pitch.getSquareSize(), pitch.getPosY()-2*pitch.getSquareSize(),
                 12*pitch.getSquareSize(),10*pitch.getSquareSize());

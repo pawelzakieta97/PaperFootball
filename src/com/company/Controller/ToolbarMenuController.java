@@ -9,6 +9,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+/**
+ * This class handles toolbar events.
+ */
 public class ToolbarMenuController {
     private Controller controller;
     public ToolbarMenuController(){
@@ -17,6 +20,10 @@ public class ToolbarMenuController {
     public void assignController(Controller controller){
         this.controller = controller;
     }
+
+    /**
+     * this method is called at the beginning of the program. It assigns listeners to toolbar elements.
+     */
     public void toolbarSetup(){
         View view = controller.getView();
         view.resetButton.addActionListener(new ActionListener() {

@@ -44,7 +44,8 @@ public class MouseEventHandler implements MouseListener{
             executor.execute(new Runnable(){
                 public void run(){
                     controller.getModel().makePlayerMove(pos);
-                    if (controller.getModel().getPitch().getCurrentGameState().getCurrentPlayer()== Player.AI){
+                    if (controller.getModel().getPitch().getCurrentGameState().getCurrentPlayer()== Player.AI &&
+                            !controller.getModel().getPitch().getCurrentGameState().gameEnded()){
                         controller.getModel().makeAIMove(controller.getModel().getDifficulty());
                     }
                 }
